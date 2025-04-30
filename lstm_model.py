@@ -18,7 +18,7 @@ print(', '.join(available_symbols[:50]) + ' ...')
 symbol = input("\nEnter the stock symbol you want to analyze (e.g., AAL): ").upper()
 
 if symbol not in available_symbols:
-    print(f"❌ Symbol '{symbol}' not found in dataset. Exiting.")
+    print(f"Symbol '{symbol}' not found in dataset. Exiting.")
     exit()
 
 predict_future = input("Do you want to see the predicted next-day stock price? (y/n): ").lower() == 'y'
@@ -44,7 +44,7 @@ history = model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, vali
 
 predictions = model.predict(X_test)
 predictions = scaler.inverse_transform(predictions)
-y_test_real = scaler.inverse_transform(y_test)
+y_test_real = scaler.inverse_transform(y_test.reshape(-1, 1))
 
 plt.figure(figsize=(12,6))
 plt.plot(y_test_real, label='Real Prices')
@@ -63,13 +63,12 @@ if predict_future:
     next_pred = scaler.inverse_transform(next_pred_scaled)
 
     print(f"\n Predicted next closing price for {symbol}: ${next_pred[0][0]:.2f}")
-
-
     plt.scatter(len(y_test_real), next_pred[0][0], color='red', label='Next Day Prediction')
+
+mse = mean_squared_error(y_test_real, predictions)
+mape = np.mean(np.abs((y_test_real - predictions) / y_test_real)) * 100
+print(f"\n Test Mean Squared Error (MSE): {mse:.6f}")
+print(f"Test Mean Absolute Percentage Error (MAPE): {mape:.2f}%")
 
 plt.legend()
 plt.show()
-
-
-mse = mean_squared_error(y_test_real, predictions)
-print(f"\n Test Mean Squared Error (MSE): {mse:.6f}")
