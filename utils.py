@@ -21,7 +21,7 @@ def load_stock_data(symbol, data_folder="data/stocks"):
     return df
 
 def preprocess_data(df, feature='Close', sequence_length=60):
-    """Preprocess stock dataframe to create sequences"""
+    """Preprocess stock data to create sequences"""
     data = df[feature].values.reshape(-1, 1)
     
     scaler = MinMaxScaler()
